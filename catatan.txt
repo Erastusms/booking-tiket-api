@@ -1,0 +1,13 @@
+How to migrate with Prisma:
+- npm install @prisma/client @prisma/cli --save-dev
+- npx prisma init
+- Buat database di prisma/schema.prisma
+- Konfigurasi DATABASE_URL di .env
+- npx prisma migrate dev --name init
+
+Melihat data secara visual di prisma:
+- npx prisma studio
+
+Generate Primsa pada TypeScript:
+- npx prisma generate
+
