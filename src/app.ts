@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import routes from '../src/routes';
 import { errorHandler } from './middlewares/errorHandler';
+import { setupSwagger } from './docs/swagger';
 
 dotenv.config();
 
@@ -12,12 +13,15 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
+setupSwagger(app);
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet()); // Security middleware
 app.use(morgan('dev')); // Logging middleware
+app.use(errorHandler); // Middleware error handler global
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
@@ -27,9 +31,6 @@ app.listen(PORT, () => {
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Train Ticket Booking API is running...' });
 });
-
-// Middleware error handler global
-app.use(errorHandler);
 
 app.use('/api/v1', routes);
 
