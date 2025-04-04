@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import routes from '../src/routes';
+import { errorHandler } from './middlewares/errorHandler';
 
 dotenv.config();
 
@@ -25,5 +27,10 @@ app.listen(PORT, () => {
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Train Ticket Booking API is running...' });
 });
+
+// Middleware error handler global
+app.use(errorHandler);
+
+app.use('/api/v1', routes);
 
 export default app;
