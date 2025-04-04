@@ -1,0 +1,21 @@
+paths: {}
+
+openapi: 3.0.0
+info:
+  title: Booking Tiket Kereta API
+  version: 1.0.0
+  description: |
+    API ini digunakan untuk kebutuhan backend sistem pemesanan tiket kereta api.
+    Dokumentasi ini mencakup otentikasi, pemesanan, manajemen pengguna, dan lainnya.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: Endpoint untuk registrasi dan login
+  - name: User
+    description: Manajemen akun pengguna
+  - name: Ticket
+    description: Pemesanan dan manajemen tiket kereta
