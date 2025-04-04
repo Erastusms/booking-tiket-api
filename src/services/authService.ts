@@ -8,12 +8,9 @@ export const registerUser = async (
 ) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
-  if (existingUser) {
-    throw { message: 'Email sudah digunakan', status: 400 };
-  }
+  if (existingUser) return;
 
   const hashedPassword = await hashPassword(password);
-
   const newUser = await prisma.user.create({
     data: {
       name,
