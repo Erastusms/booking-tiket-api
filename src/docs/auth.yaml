@@ -1,5 +1,5 @@
 paths:
-  /api/auth/v1/register:
+  /api/v1/auth/register:
     post:
       tags:
         - Auth
@@ -74,3 +74,48 @@ paths:
                         message:
                           type: string
                           example: Email tidak valid
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: logintest@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        200:
+          description: Login berhasil
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: Login berhasil
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+        400:
+          description: Email atau password salah
