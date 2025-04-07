@@ -1,5 +1,6 @@
 import prisma from '../config/prisma';
-import { hashPassword } from '../utils/bcrypt';
+import { MESSAGE } from '../constants';
+import { hashPassword, verifyPassword } from '../utils/bcrypt';
 
 export const registerUser = async (
   name: string,
@@ -20,4 +21,23 @@ export const registerUser = async (
   });
 
   return { id: newUser.id, email: newUser.email };
+};
+
+export const loginService = async (email: string, password: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    return { message: MESSAGE.USER_NOT_FOUND };
+  }
+  
+  const isMatch = await verifyPassword(password, user.passwordHash)
+  if (!isMatch) {
+    return { message: MESSAGE.LOGIN_FAILED };
+  }
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  };
 };
