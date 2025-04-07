@@ -2,14 +2,16 @@ import prisma from '../config/prisma';
 import { MESSAGE } from '../constants';
 import { hashPassword, verifyPassword } from '../utils/bcrypt';
 
-export const registerUser = async (
+export const registerService = async (
   name: string,
   email: string,
   password: string
 ) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
-  if (existingUser) return;
+  if (existingUser) {
+    return { message: MESSAGE.EMAIL_ALREADY_EXIST };
+  }
 
   const hashedPassword = await hashPassword(password);
   const newUser = await prisma.user.create({
