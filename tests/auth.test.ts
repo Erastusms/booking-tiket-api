@@ -52,7 +52,9 @@ describe("User Login", () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.message).toBe("Login berhasil");
-    expect(res.body.data.email).toBe(email);
+    expect(res.body.data).toHaveProperty("token");
+    expect(res.body.data.user.email).toBe(email);
+    expect(typeof res.body.data.token).toBe("string");
   });
 
   it("should fail when wrong password is provided", async () => {

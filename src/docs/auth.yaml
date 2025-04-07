@@ -111,11 +111,19 @@ paths:
                   data:
                     type: object
                     properties:
-                      id:
+                      token:
                         type: string
-                      name:
-                        type: string
-                      email:
-                        type: string
-        400:
-          description: Email atau password salah
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        401:
+          description: Login gagal - kredensial salah
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email atau password salah
