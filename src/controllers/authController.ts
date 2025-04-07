@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { loginService, registerService } from '../services/authService';
 import { errorResponse, successResponse } from '../utils/responseHandler';
 import { MESSAGE } from '../constants';
+import { generateToken } from '../utils/jwt';
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -21,5 +22,7 @@ export const login = async (req: Request, res: Response) => {
     return errorResponse(res, result.message, 400);
   }
 
-  return successResponse(res, MESSAGE.LOGIN_SUCCESS, result);
+  const token = generateToken(result);
+
+  return successResponse(res, MESSAGE.LOGIN_SUCCESS, { token, user: result });
 };
