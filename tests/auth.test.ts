@@ -16,8 +16,8 @@ describe("User Registration", () => {
 
   it("should fail with an existing email", async () => {
     const res = await request(app).post("/api/v1/auth/register").send({
-      name: "hehe",
-      email: "test@example.com",
+      name: "ucok",
+      email: "test200@example.com",
       password: "password123",
     });
 
