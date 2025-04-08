@@ -5,3 +5,8 @@ export const MESSAGE = {
   LOGIN_FAILED: 'Email atau password salah',
   USER_NOT_FOUND: 'User tidak ditemukan',
 };
+
+export const ROLE = {
+  ADMIN: 'admin',
+  MEMBER: 'member',
+};
