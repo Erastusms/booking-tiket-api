@@ -1,0 +1,63 @@
+paths:
+  /api/v1/schedule:
+    post:
+      summary: Membuat jadwal kereta (admin only)
+      tags:
+        - Schedule
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleCreate'
+      responses:
+        '200':
+          description: Jadwal berhasil dibuat
+  /api/v1/schedule/upload:
+    post:
+      summary: Upload Excel untuk membuat banyak jadwal
+      tags:
+        - Schedule
+      security:
+        - bearerAuth: []
+      consumes:
+        - multipart/form-data
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Jadwal berhasil dibuat
+components:
+  schemas:
+    ScheduleCreate:
+      type: object
+      required:
+        - trainId
+        - departureStationId
+        - arrivalStationId
+        - departureTime
+        - arrivalTime
+        - price
+      properties:
+        trainId:
+          type: string
+        departureStationId:
+          type: string
+        arrivalStationId:
+          type: string
+        departureTime:
+          type: string
+        arrivalTime:
+          type: string
+        price:
+          type: number
