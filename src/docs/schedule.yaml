@@ -37,6 +37,40 @@ paths:
       responses:
         200:
           description: Jadwal berhasil dibuat
+  /api/v1/schedules:
+    get:
+      tags:
+        - Schedule
+      summary: Get all train schedules with filter
+      description: Endpoint untuk melihat semua jadwal kereta dengan opsi filter berdasarkan tanggal dan stasiun.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: from
+          schema:
+            type: string
+          description: Nama stasiun keberangkatan
+        - in: query
+          name: to
+          schema:
+            type: string
+          description: Nama stasiun tujuan
+        - in: query
+          name: date
+          schema:
+            type: string
+            format: date
+          description: Tanggal keberangkatan format YYYY-MM-DD
+      responses:
+        200:
+          description: Jadwal berhasil diambil
+          content:
+            application/json:
+              example:
+                success: true
+                message: Berhasil mengambil data jadwal kereta
+                data: [...]
 components:
   schemas:
     ScheduleCreate:
