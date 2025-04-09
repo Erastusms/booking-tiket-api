@@ -3,6 +3,7 @@ import { errorResponse, successResponse } from '../utils/responseHandler';
 import {
   createScheduleService,
   createSchedulesFromExcel,
+  getScheduleService,
 } from '../services/scheduleService';
 
 export const createSchedule = async (req: Request, res: Response) => {
@@ -18,4 +19,14 @@ export const uploadScheduleExcel = async (req: Request, res: Response) => {
 
   const schedules = await createSchedulesFromExcel(file.buffer);
   return successResponse(res, 'Schedules created successfully', schedules);
+};
+
+export const getSchedules = async (req: Request, res: Response) => {
+  const { from, to, date } = req.query;
+  const schedules = await getScheduleService({
+    from: from as string,
+    to: to as string,
+    date: date as string,
+  });
+  return successResponse(res, 'Berhasil mengambil data jadwal kereta', schedules);
 };

@@ -6,12 +6,14 @@ import { validateRequest } from '../middlewares/validateRequest';
 import { scheduleSchema } from '../validations/scheduleValidation';
 import {
   createSchedule,
+  getSchedules,
   uploadScheduleExcel,
 } from '../controllers/scheduleController';
 import { upload } from '../middlewares/upload';
 
 const scheduleRoute = express.Router();
 
+scheduleRoute.get('/', auth, getSchedules);
 scheduleRoute.post(
   '/',
   auth,
