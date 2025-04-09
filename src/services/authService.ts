@@ -1,3 +1,4 @@
+import { Role } from '@prisma/client';
 import prisma from '../config/prisma';
 import { MESSAGE } from '../constants';
 import { hashPassword, verifyPassword } from '../utils/bcrypt';
@@ -5,7 +6,8 @@ import { hashPassword, verifyPassword } from '../utils/bcrypt';
 export const registerService = async (
   name: string,
   email: string,
-  password: string
+  password: string,
+  role: string
 ) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
@@ -19,6 +21,7 @@ export const registerService = async (
       name,
       email,
       passwordHash: hashedPassword,
+      role: role as Role,
     },
   });
 
@@ -31,8 +34,8 @@ export const loginService = async (email: string, password: string) => {
   if (!user) {
     return { message: MESSAGE.USER_NOT_FOUND };
   }
-  
-  const isMatch = await verifyPassword(password, user.passwordHash)
+
+  const isMatch = await verifyPassword(password, user.passwordHash);
   if (!isMatch) {
     return { message: MESSAGE.LOGIN_FAILED };
   }
@@ -41,6 +44,6 @@ export const loginService = async (email: string, password: string) => {
     id: user.id,
     name: user.name,
     email: user.email,
-    role: user.role
+    role: user.role,
   };
 };

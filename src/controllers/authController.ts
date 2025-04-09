@@ -5,8 +5,8 @@ import { MESSAGE } from '../constants';
 import { generateToken } from '../utils/jwt';
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
-  const user = await registerService(name, email, password);
+  const { name, email, password, role } = req.body;
+  const user = await registerService(name, email, password, role);
   if (user.message) {
     return errorResponse(res, user.message, 400);
   }
