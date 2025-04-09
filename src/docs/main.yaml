@@ -17,5 +17,7 @@ tags:
     description: Endpoint untuk registrasi dan login
   - name: User
     description: Manajemen akun pengguna
+  - name: Schedule
+    description: Membuat jadwal kereta (admin only)
   - name: Ticket
     description: Pemesanan dan manajemen tiket kereta
