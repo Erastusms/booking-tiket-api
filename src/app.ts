@@ -21,7 +21,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet()); // Security middleware
 app.use(morgan('dev')); // Logging middleware
-app.use(errorHandler); // Middleware error handler global
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
@@ -33,5 +32,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/v1', routes);
+
+app.use(errorHandler); // Error Handler baru akan terexcute di akhir
 
 export default app;
