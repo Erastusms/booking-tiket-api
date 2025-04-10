@@ -4,18 +4,24 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") // Ambil dari file .env
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String    @id @default(uuid())
-  name         String
-  email        String    @unique
-  passwordHash String
-  role         Role      @default(MEMBER)
-  bookings     Booking[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                 String    @id @default(uuid())
+  fullname           String
+  username           String    @unique
+  email              String    @unique
+  passwordHash       String
+  role               Role      @default(MEMBER)
+  token              String?
+  lastPasswordChange DateTime?
+
+  bookings Booking[]
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
@@ -23,85 +29,123 @@ enum Role {
   MEMBER
 }
 
-model Train {
-  id        String     @id @default(uuid())
-  name      String
-  code      String     @unique
-  capacity  Int
-  schedules Schedule[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-}
-
 model Station {
-  id                 String     @id @default(uuid())
-  name               String
-  code               String     @unique
-  location           String
+  id       String @id @default(uuid())
+  name     String
+  code     String @unique
+  location String
+
   departureSchedules Schedule[] @relation(name: "DepartureStation")
   arrivalSchedules   Schedule[] @relation(name: "ArrivalStation")
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Train {
+  id       String @id @default(uuid())
+  name     String
+  code     String @unique
+  capacity Int
+
+  schedules Schedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Schedule {
-  id                 String    @id @default(uuid())
-  trainId            String
-  train              Train     @relation(fields: [trainId], references: [id])
+  id      String @id @default(uuid())
+  trainId String
+  train   Train  @relation(fields: [trainId], references: [id])
+
   departureStationId String
-  departureStation   Station   @relation(name: "DepartureStation", fields: [departureStationId], references: [id])
-  arrivalStationId   String
-  arrivalStation     Station   @relation(name: "ArrivalStation", fields: [arrivalStationId], references: [id])
-  departureTime      DateTime
-  arrivalTime        DateTime
-  price              Decimal
-  bookings           Booking[]
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  departureStation   Station @relation(name: "DepartureStation", fields: [departureStationId], references: [id])
+
+  arrivalStationId String
+  arrivalStation   Station @relation(name: "ArrivalStation", fields: [arrivalStationId], references: [id])
+
+  departureTime DateTime
+  arrivalTime   DateTime
+  price         Decimal
+
+  isAvailable Boolean @default(true)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
 }
 
 model Booking {
-  id         String        @id @default(uuid())
-  userId     String
-  user       User          @relation(fields: [userId], references: [id])
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   scheduleId String
-  schedule   Schedule      @relation(fields: [scheduleId], references: [id])
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+
+  seatNumber Int
   status     BookingStatus @default(PENDING)
-  tickets    Ticket[]
-  payment    Payment?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+
+  payment Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
 }
 
 enum BookingStatus {
   PENDING
   PAID
-  CANCELED
-}
-
-model Ticket {
-  id            String   @id @default(uuid())
-  bookingId     String
-  booking       Booking  @relation(fields: [bookingId], references: [id])
-  passengerName String
-  seatNumber    String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  CANCELLED
 }
 
 model Payment {
-  id          String        @id @default(uuid())
-  bookingId   String        @unique
-  booking     Booking       @relation(fields: [bookingId], references: [id])
-  amount      Decimal
-  status      PaymentStatus @default(PENDING)
-  paymentDate DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id        String  @id @default(uuid())
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  amount Decimal
+  method PaymentMethod
+  status PaymentStatus
+
+  logs PaymentLog[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  updatedBy String?
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CREDIT_CARD
+  E_WALLET
+  VA
+  QRIS
 }
 
 enum PaymentStatus {
   PENDING
-  COMPLETED
+  SUCCESS
   FAILED
+}
+
+model PaymentLog {
+  id        String  @id @default(uuid())
+  paymentId String
+  payment   Payment @relation(fields: [paymentId], references: [id])
+
+  thirdPartyResponse Json
+  status             String
+  message            String?
+
+  createdAt DateTime @default(now())
 }

@@ -1,7 +1,31 @@
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '../src/utils/bcrypt';
+
 const prisma = new PrismaClient();
 
 async function main() {
+  const hashedPassword = await hashPassword('datacontoh123');
+
+  // Seed Users
+  await prisma.user.createMany({
+    data: [
+      {
+        fullname: 'Ini ADMIN',
+        username: 'admin_user',
+        email: 'admin@example.com',
+        passwordHash: hashedPassword,
+        role: 'ADMIN',
+      },
+      {
+        fullname: 'Ini MEMBER',
+        username: 'member_user',
+        email: 'member@example.com',
+        passwordHash: hashedPassword,
+        role: 'MEMBER',
+      },
+    ],
+  });
+
   // Seed Station
   await prisma.station.createMany({
     data: [
