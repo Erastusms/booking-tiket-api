@@ -4,7 +4,8 @@ import { MESSAGE } from '../constants';
 import { hashPassword, verifyPassword } from '../utils/bcrypt';
 
 export const registerService = async (
-  name: string,
+  username: string,
+  fullname: string,
   email: string,
   password: string,
   role: string
@@ -18,7 +19,8 @@ export const registerService = async (
   const hashedPassword = await hashPassword(password);
   const newUser = await prisma.user.create({
     data: {
-      name,
+      username,
+      fullname,
       email,
       passwordHash: hashedPassword,
       role: role as Role,
@@ -42,7 +44,7 @@ export const loginService = async (email: string, password: string) => {
 
   return {
     id: user.id,
-    name: user.name,
+    username: user.username,
     email: user.email,
     role: user.role,
   };
