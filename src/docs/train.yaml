@@ -1,0 +1,168 @@
+paths:
+  /api/v1/train:
+    get:
+      summary: Get all trains
+      tags:
+        - Train
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of trains
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Train'
+    post:
+      summary: Create a new train
+      tags:
+        - Train
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - code
+                - capacity
+              properties:
+                name:
+                  type: string
+                code:
+                  type: string
+                  maxLength: 3
+                capacity:
+                  type: integer
+      responses:
+        '201':
+          description: Train created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Train'
+
+  /api/v1/train/{id}:
+    get:
+      summary: Get train by ID
+      tags:
+        - Train
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Train found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Train'
+        '404':
+          description: Train not found
+    put:
+      summary: Update a train
+      tags:
+        - Train
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                code:
+                  type: string
+                  maxLength: 3
+                capacity:
+                  type: integer
+      responses:
+        '200':
+          description: Train updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Train'
+    delete:
+      summary: Delete a train
+      tags:
+        - Train
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Train deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    Train:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        code:
+          type: string
+          maxLength: 3
+        capacity:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
