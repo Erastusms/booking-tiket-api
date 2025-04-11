@@ -7,6 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 export interface TokenPayload {
   id: string;
   email: string;
+  username: string;
   role: string;
 }
 
