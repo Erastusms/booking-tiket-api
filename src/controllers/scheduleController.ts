@@ -5,8 +5,12 @@ import {
   createSchedulesFromExcel,
   getScheduleService,
 } from '../services/scheduleService';
+import { TokenPayload } from '../middlewares/auth';
 
 export const createSchedule = async (req: Request, res: Response) => {
+  const { username } = req.user as TokenPayload;
+  req.body.createdBy = username;
+  req.body.updatedBy = username;
   const schedule = await createScheduleService(req.body);
   return successResponse(res, 'Jadwal kereta berhasil dibuat', schedule);
 };
@@ -28,5 +32,9 @@ export const getSchedules = async (req: Request, res: Response) => {
     to: to as string,
     date: date as string,
   });
-  return successResponse(res, 'Berhasil mengambil data jadwal kereta', schedules);
+  return successResponse(
+    res,
+    'Berhasil mengambil data jadwal kereta',
+    schedules
+  );
 };
