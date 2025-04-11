@@ -16,6 +16,9 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
       if (err.code === 'P2003') {
         message = `Data relasi tidak ditemukan: ${err.meta?.field_name}`;
       }
+      if (err.code === 'P2025') {
+        message = `Data tidak ditemukan`;
+      }
     }
 
     if (err instanceof Prisma.PrismaClientValidationError) {
