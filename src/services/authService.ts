@@ -2,6 +2,7 @@ import { Role } from '@prisma/client';
 import prisma from '../config/prisma';
 import { MESSAGE } from '../constants';
 import { hashPassword, verifyPassword } from '../utils/bcrypt';
+import { generateToken } from '../utils/jwt';
 
 export const registerService = async (
   username: string,
@@ -31,21 +32,19 @@ export const registerService = async (
 };
 
 export const loginService = async (email: string, password: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
-
-  if (!user) {
+  const result = await prisma.user.findUnique({ where: { email } });
+  if (!result) {
     return { message: MESSAGE.USER_NOT_FOUND };
   }
+  const token = generateToken(result);
+  const { id, username, role } = result;
 
-  const isMatch = await verifyPassword(password, user.passwordHash);
+  await prisma.user.update({ where: { id }, data: { token } });
+
+  const isMatch = await verifyPassword(password, result.passwordHash);
   if (!isMatch) {
     return { message: MESSAGE.LOGIN_FAILED };
   }
 
-  return {
-    id: user.id,
-    username: user.username,
-    email: user.email,
-    role: user.role,
-  };
+  return { id, username, email, role, token };
 };
