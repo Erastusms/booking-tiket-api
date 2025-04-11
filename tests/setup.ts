@@ -9,7 +9,8 @@ let tokenUser: string;
 beforeAll(async () => {
   await prisma.user.create({
     data: {
-      name: 'Admin Test',
+      fullname: 'Admin Fullname',
+      username: 'Admin Test',
       email: 'admin@example.com',
       passwordHash: await hashPassword('data123'),
       role: 'ADMIN',
@@ -18,7 +19,8 @@ beforeAll(async () => {
 
   await prisma.user.create({
     data: {
-      name: 'User Test',
+      fullname: 'User Fullname',
+      username: 'User Test',
       email: 'user@example.com',
       passwordHash: await hashPassword('data123'),
     },
