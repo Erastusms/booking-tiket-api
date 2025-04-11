@@ -9,9 +9,9 @@ describe('Schedule - Create', () => {
       .post('/api/v1/schedule')
       .set('Authorization', `Bearer ${tokenAdmin}`)
       .send({
-        trainId: '7a455200-7cf6-48f3-8932-e4dbd5c1759b',
-        departureStationId: '73f9b1c0-eb55-4157-b02a-92041fab588e',
-        arrivalStationId: '7fc860a2-adee-4a6c-b87c-5e3755be1977',
+        trainId: '015727e1-15f3-4dd1-8ea0-cfcac9eebcad',
+        departureStationId: '1d48c5a3-a8b0-478b-b527-02c2ba33fc5f',
+        arrivalStationId: '377c5e4a-2f99-4369-afeb-54b023955b36',
         departureTime: '2025-05-01T08:00:00Z',
         arrivalTime: '2025-05-01T12:00:00Z',
         price: 450000,

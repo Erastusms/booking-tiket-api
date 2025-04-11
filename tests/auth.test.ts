@@ -1,13 +1,11 @@
 import request from "supertest";
 import app from "../src/app";
-import prisma from "../src/config/prisma";
-import { hashPassword } from "../src/utils/bcrypt";
-
 describe("User Registration", () => {
   it("should register a new user", async () => {
     const res = await request(app).post("/api/v1/auth/register").send({
-      name: "ucok",
-      email: "test200@example.com",
+      username: "ucok220",
+      fullname: "ucok selalu setia",
+      email: "test2025@example.com",
       password: "password123",
     });
 
@@ -18,8 +16,9 @@ describe("User Registration", () => {
 
   it("should fail with an existing email", async () => {
     const res = await request(app).post("/api/v1/auth/register").send({
-      name: "ucok",
-      email: "test200@example.com",
+      username: "ucok220",
+      fullname: "ucok selalu setia",
+      email: "test2025@example.com",
       password: "password123",
     });
 
@@ -29,17 +28,15 @@ describe("User Registration", () => {
 });
 
 describe("User Login", () => {
-  const email = "testlogin@mail.com";
-  const plainPassword = "password123";
+  const email = "tesUserLogin123@gmail.com";
+  const plainPassword = "data123";
 
   beforeAll(async () => {
-    const hashedPassword = await hashPassword(plainPassword);
-    await prisma.user.create({
-      data: {
-        name: "Test Login",
-        email,
-        passwordHash: hashedPassword,
-      },
+    await request(app).post("/api/v1/auth/register").send({
+      username: "benerkan",
+      fullname: "bener ini ucok",
+      email,
+      password: plainPassword
     });
   });
 
@@ -52,9 +49,9 @@ describe("User Login", () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.message).toBe("Login berhasil");
-    expect(res.body.data).toHaveProperty("token");
+    expect(res.body.data.user).toHaveProperty("token");
     expect(res.body.data.user.email).toBe(email);
-    expect(typeof res.body.data.token).toBe("string");
+    expect(typeof res.body.data.user.token).toBe("string");
   });
 
   it("should fail when wrong password is provided", async () => {
