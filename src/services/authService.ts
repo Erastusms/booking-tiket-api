@@ -1,16 +1,9 @@
-import { Role } from '@prisma/client';
 import prisma from '../config/prisma';
 import { MESSAGE } from '../constants';
 import { hashPassword, verifyPassword } from '../utils/bcrypt';
-import { generateToken } from '../utils/jwt';
 
-export const registerService = async (
-  username: string,
-  fullname: string,
-  email: string,
-  password: string,
-  role: string
-) => {
+export const registerService = async (data: any) => {
+  const { email, password, ...res } = data;
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
@@ -20,11 +13,9 @@ export const registerService = async (
   const hashedPassword = await hashPassword(password);
   const newUser = await prisma.user.create({
     data: {
-      username,
-      fullname,
       email,
-      passwordHash: hashedPassword,
-      role: role as Role,
+      password: hashedPassword,
+      ...res,
     },
   });
 
@@ -36,15 +27,12 @@ export const loginService = async (email: string, password: string) => {
   if (!result) {
     return { message: MESSAGE.USER_NOT_FOUND };
   }
-  const token = generateToken(result);
-  const { id, username, role } = result;
 
-  await prisma.user.update({ where: { id }, data: { token } });
-
-  const isMatch = await verifyPassword(password, result.passwordHash);
+  const { id, fullName, role, password: hashedPassword } = result;
+  const isMatch = await verifyPassword(password, hashedPassword);
   if (!isMatch) {
     return { message: MESSAGE.LOGIN_FAILED };
   }
 
-  return { id, username, email, role, token };
+  return { id, fullName, role };
 };
