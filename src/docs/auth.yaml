@@ -12,21 +12,27 @@ paths:
             schema:
               type: object
               required:
-                - name
+                - fullName
                 - email
                 - password
+                - phoneNumber
+                - idCardNumber
               properties:
-                name:
+                fullName:
                   type: string
                   example: John Doe
                 email:
                   type: string
-                  format: email
-                  example: johndoe@example.com
+                  example: john@example.com
                 password:
                   type: string
-                  minLength: 6
-                  example: secret123
+                  example: password123
+                phoneNumber:
+                  type: string
+                  example: 081234567890
+                idCardNumber:
+                  type: string
+                  example: 1234567890123456
       responses:
         '201':
           description: Registrasi berhasil
@@ -96,7 +102,7 @@ paths:
                   type: string
                   example: password123
       responses:
-        200:
+        '200':
           description: Login berhasil
           content:
             application/json:
@@ -114,7 +120,7 @@ paths:
                       token:
                         type: string
                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        401:
+        '401':
           description: Login gagal - kredensial salah
           content:
             application/json:

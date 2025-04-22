@@ -1,0 +1,147 @@
+paths:
+  /api/v1/station:
+    get:
+      tags:
+        - Station
+      summary: Get all stations
+      description: Mendapatkan semua data stasiun yang ada
+      responses:
+        '200':
+          description: Success Get Data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+
+    post:
+      tags:
+        - Station
+      summary: Create a new station
+      description: Membuat stasiun baru oleh admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStation'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+
+  /api/v1/station/{id}:
+    get:
+      tags:
+        - Station
+      summary: Get a station by ID
+      description: Mendapatkan data stasiun by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get station data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+        '404':
+          description: Not Found
+
+    put:
+      tags:
+        - Station
+      summary: Update a station by ID
+      description: Memperbarui data stasiun by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStation'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+
+    delete:
+      tags:
+        - Station
+      summary: Delete a station by ID
+      description: Menghapus data stasiun by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Station deleted successfully
+
+components:
+  schemas:
+    Station:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        city:
+          type: string
+        schedulesDeparture:
+          type: array
+          items:
+            type: object
+        schedulesArrival:
+          type: array
+          items:
+            type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateStation:
+      type: object
+      required:
+        - name
+        - code
+        - city
+      properties:
+        name:
+          type: string
+          example: Stasiun Bandung
+        code:
+          type: string
+          example: BDG
+        city:
+          type: string
+          example: Bandung
