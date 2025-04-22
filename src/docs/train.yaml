@@ -1,7 +1,31 @@
 paths:
   /api/v1/train:
+    post:
+      summary: Create a new train
+      description: Membuat data kereta baru
+      tags:
+        - Train
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainInput'
+      responses:
+        '201':
+          description: Train created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Train'
+        '400':
+          description: Bad request
+
     get:
       summary: Get all trains
+      description: Melihat data kereta yang ada
       tags:
         - Train
       security:
@@ -12,54 +36,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Train'
-    post:
-      summary: Create a new train
-      tags:
-        - Train
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-                - code
-                - capacity
-              properties:
-                name:
-                  type: string
-                code:
-                  type: string
-                  maxLength: 3
-                capacity:
-                  type: integer
-      responses:
-        '201':
-          description: Train created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/Train'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Train'
 
   /api/v1/train/{id}:
     get:
       summary: Get train by ID
+      description: Melihat detail kereta by ID
       tags:
         - Train
       security:
@@ -76,16 +60,12 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/Train'
+                $ref: '#/components/schemas/Train'
         '404':
-          description: Train not found
+          $ref: '#/components/responses/NotFound'
     put:
       summary: Update a train
+      description: Memperbarui data kereta by ID
       tags:
         - Train
       security:
@@ -101,29 +81,19 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                code:
-                  type: string
-                  maxLength: 3
-                capacity:
-                  type: integer
+              $ref: '#/components/schemas/TrainInput'
       responses:
         '200':
-          description: Train updated
+          description: Train updated successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/Train'
+                $ref: '#/components/schemas/Train'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       summary: Delete a train
+      description: Menghapus data kereta by ID
       tags:
         - Train
       security:
@@ -144,6 +114,8 @@ paths:
                 properties:
                   message:
                     type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 components:
   schemas:
@@ -152,17 +124,32 @@ components:
       properties:
         id:
           type: string
-          format: uuid
         name:
           type: string
         code:
           type: string
-          maxLength: 3
-        capacity:
-          type: integer
         createdAt:
           type: string
           format: date-time
-        updatedAt:
+    TrainInput:
+      type: object
+      required:
+        - name
+        - code
+      properties:
+        name:
           type: string
-          format: date-time
+        code:
+          type: string
+    ErrorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+  responses:
+    NotFound:
+      description: Data not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
