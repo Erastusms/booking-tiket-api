@@ -1,11 +1,11 @@
 import prisma from '../config/prisma';
 
-export const createStationService = async (data: {
-  name: string;
-  code: string;
-  location: string;
-}) => {
+export const createStationService = async (data: { name: string; code: string; city: string }) => {
   return await prisma.station.create({ data });
+};
+
+export const getAllStations = async () => {
+  return await prisma.station.findMany();
 };
 
 export const getAllStationServices = async () => {
@@ -18,7 +18,7 @@ export const getStationServiceById = async (id: string) => {
 
 export const updateStationService = async (
   id: string,
-  data: Partial<{ name: string; code: string; location: string }>
+  data: Partial<{ name: string; code: string; city: string }>
 ) => {
   return await prisma.station.update({ where: { id }, data });
 };
