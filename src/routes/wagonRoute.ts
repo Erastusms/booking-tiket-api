@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import { createTrain, getTrainById, getTrains, removeTrain, updateTrain } from '../controllers/trainController';
 import { accessRole, auth } from '../middlewares/auth';
 import { validateRequest } from '../middlewares/validateRequest';
-import { createTrainSchema, updateTrainSchema } from '../validations/trainValidation';
 import { ROLE } from '../constants';
 import { createWagonCategorySchema, createWagonSchema } from '../validations/wagonValidation';
 import { createCategory, createWagon, deleteCategory, deleteWagon, getAllCategory } from '../controllers/wagonController';
