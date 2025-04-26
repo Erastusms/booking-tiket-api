@@ -1,30 +1,34 @@
-import prisma from "../config/prisma";
+import prisma from '../config/prisma';
 
 // Wagon
 export const createWagonService = async (data: {
-    trainId: string;
-    wagonCode: string;
-    categoryId: string;
+  trainId: string;
+  wagonCode: string;
+  categoryId: string;
 }) => {
-    return await prisma.wagon.create({ data });
+  return await prisma.wagon.create({ data });
+};
+
+export const getWagonByIdService = async (wagonId: string) => {
+  return await prisma.wagon.findUnique({ where: { id: wagonId } });
 };
 
 export const deleteWagonService = async (id: string) => {
-    return await prisma.wagon.delete({ where: { id } });
+  return await prisma.wagon.delete({ where: { id } });
 };
 
 // Wagon_Category
 export const createCategoryService = async (data: {
-    name: "EKONOMI" | "BISNIS" | "EKSEKUTIF";
-    capacity: number;
+  name: 'EKONOMI' | 'BISNIS' | 'EKSEKUTIF';
+  capacity: number;
 }) => {
-    return await prisma.wagonCategory.create({ data });
+  return await prisma.wagonCategory.create({ data });
 };
 
 export const getAllCategoryService = async () => {
-    return await prisma.wagonCategory.findMany();
+  return await prisma.wagonCategory.findMany();
 };
 
 export const deleteCategoryService = async (id: string) => {
-    return await prisma.wagonCategory.delete({ where: { id } });
+  return await prisma.wagonCategory.delete({ where: { id } });
 };
