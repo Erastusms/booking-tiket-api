@@ -1,0 +1,112 @@
+paths:
+  /api/v1/seat:
+    post:
+      tags:
+        - Seat
+      summary: Create seat manually or upload Excel
+      description: |
+        - Jika ingin create 1 seat, kirim body JSON.
+        - Jika ingin upload banyak seat dari file Excel, kirim multipart/form-data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wagonId:
+                  type: string
+                  example: 3d84ef15-6c88-4b93-b88c-3d708c4f9a91
+                seatNumber:
+                  type: string
+                  example: A1
+                seatAvailability:
+                  type: string
+                  enum: [AVAILABLE, RESERVED, BOOKED]
+                  example: AVAILABLE
+                row:
+                  type: integer
+                  example: 1
+                column:
+                  type: string
+                  example: A
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Success create seat(s)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Successfully created seat(s)
+                  data:
+                    oneOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                          seatNumber:
+                            type: string
+                          seatAvailability:
+                            type: string
+                            enum: [AVAILABLE, RESERVED, BOOKED]
+                          row:
+                            type: integer
+                          column:
+                            type: string
+                      - type: object
+                        properties:
+                          count:
+                            type: integer
+                            example: 10
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad Request
+    NotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Not Found
+    ServerError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Internal Server Error
