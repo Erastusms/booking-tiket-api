@@ -1,0 +1,177 @@
+paths:
+  /api/v1/fare:
+    post:
+      summary: Membuat fare baru
+      description: Endpoint ini digunakan untuk membuat fare baru dengan menyertakan ID jadwal dan kategori wagon serta harga.
+      operationId: createFare
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scheduleId:
+                  type: string
+                  description: ID jadwal kereta yang terkait dengan fare.
+                categoryId:
+                  type: string
+                  description: ID kategori wagon yang terkait dengan fare.
+                price:
+                  type: number
+                  format: decimal
+                  description: Harga fare untuk kategori dan jadwal tersebut.
+              required:
+                - scheduleId
+                - categoryId
+                - price
+      responses:
+        '201':
+          description: Fare berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID fare yang baru dibuat.
+                  scheduleId:
+                    type: string
+                    description: ID jadwal kereta.
+                  categoryId:
+                    type: string
+                    description: ID kategori wagon.
+                  price:
+                    type: number
+                    format: decimal
+                    description: Harga fare.
+        '400':
+          description: Bad request, data yang dikirim tidak valid.
+
+    get:
+      summary: Mengambil semua fare
+      description: Endpoint ini digunakan untuk mengambil daftar semua fare yang ada.
+      operationId: getAllFares
+      responses:
+        '200':
+          description: Daftar fare berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID fare.
+                    scheduleId:
+                      type: string
+                      description: ID jadwal kereta.
+                    categoryId:
+                      type: string
+                      description: ID kategori wagon.
+                    price:
+                      type: number
+                      format: decimal
+                      description: Harga fare.
+        '500':
+          description: Internal server error.
+
+  /api/v1/fare/category/{categoryName}:
+    get:
+      summary: Mengambil fare berdasarkan kategori
+      description: Endpoint ini digunakan untuk mengambil daftar fare berdasarkan nama kategori wagon.
+      operationId: getFaresByCategoryName
+      parameters:
+        - name: categoryName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Nama kategori wagon untuk mencari fare yang terkait.
+      responses:
+        '200':
+          description: Daftar fare berdasarkan kategori berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID fare.
+                    scheduleId:
+                      type: string
+                      description: ID jadwal kereta.
+                    categoryId:
+                      type: string
+                      description: ID kategori wagon.
+                    price:
+                      type: number
+                      format: decimal
+                      description: Harga fare.
+                    category:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Nama kategori wagon.
+        '404':
+          description: Kategori tidak ditemukan, tidak ada fare yang tersedia.
+        '500':
+          description: Internal server error.
+
+  /api/v1/fare/{fareId}:
+    delete:
+      summary: Menghapus fare
+      description: Endpoint ini digunakan untuk menghapus fare berdasarkan ID fare.
+      operationId: deleteFare
+      parameters:
+        - name: fareId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID fare yang ingin dihapus.
+      responses:
+        '200':
+          description: Fare berhasil dihapus
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Pesan konfirmasi penghapusan fare.
+        '404':
+          description: Fare tidak ditemukan.
+        '500':
+          description: Internal server error.
+
+components:
+  schemas:
+    Fare:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID fare.
+        scheduleId:
+          type: string
+          description: ID jadwal kereta.
+        categoryId:
+          type: string
+          description: ID kategori wagon.
+        price:
+          type: number
+          format: decimal
+          description: Harga fare.
+      required:
+        - scheduleId
+        - categoryId
+        - price
