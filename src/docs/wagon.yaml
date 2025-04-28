@@ -1,0 +1,179 @@
+paths:
+  /api/v1/wagon:
+    post:
+      tags:
+        - Wagon
+      summary: Create new wagon
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - code
+                - capacity
+                - trainId
+              properties:
+                name:
+                  type: string
+                code:
+                  type: string
+                capacity:
+                  type: integer
+                trainId:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Wagon created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wagon'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    get:
+      tags:
+        - Wagon
+      summary: Get all wagons
+      responses:
+        '200':
+          description: List of wagons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wagon'
+
+  /api/v1/wagon/{id}:
+    delete:
+      tags:
+        - Wagon
+      summary: Delete wagon
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Wagon deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/wagon/category:
+    post:
+      tags:
+        - WagonCategory
+      summary: Create new wagon category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Wagon category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagonCategory'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    get:
+      tags:
+        - WagonCategory
+      summary: Get all wagon categories
+      responses:
+        '200':
+          description: List of wagon categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WagonCategory'
+
+  /api/v1/wagon/category/{id}:
+    delete:
+      tags:
+        - WagonCategory
+      summary: Delete wagon category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Wagon category deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    Wagon:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        code:
+          type: string
+        capacity:
+          type: integer
+        trainId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
