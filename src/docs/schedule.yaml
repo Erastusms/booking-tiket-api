@@ -1,97 +1,193 @@
 paths:
   /api/v1/schedule:
     post:
-      summary: Membuat jadwal kereta (admin only)
       tags:
         - Schedule
-      security:
-        - bearerAuth: []
+      summary: Create new schedule
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ScheduleCreate'
-      responses:
-        '200':
-          description: Jadwal berhasil dibuat
-  /api/v1/schedule/upload:
-    post:
-      summary: Upload Excel untuk membuat banyak jadwal
-      tags:
-        - Schedule
-      security:
-        - bearerAuth: []
-      consumes:
-        - multipart/form-data
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
               type: object
+              required:
+                - trainId
+                - departureStationId
+                - arrivalStationId
+                - departureTime
+                - arrivalTime
               properties:
-                file:
+                trainId:
                   type: string
-                  format: binary
+                  format: uuid
+                departureStationId:
+                  type: string
+                  format: uuid
+                arrivalStationId:
+                  type: string
+                  format: uuid
+                departureTime:
+                  type: string
+                  format: date-time
+                arrivalTime:
+                  type: string
+                  format: date-time
       responses:
-        200:
-          description: Jadwal berhasil dibuat
-  /api/v1/schedules:
+        '201':
+          description: Schedule created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '400':
+          $ref: '#/components/responses/BadRequest'
     get:
       tags:
         - Schedule
-      summary: Get all train schedules with filter
-      description: Endpoint untuk melihat semua jadwal kereta dengan opsi filter berdasarkan tanggal dan stasiun.
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: query
-          name: from
-          schema:
-            type: string
-          description: Nama stasiun keberangkatan
-        - in: query
-          name: to
-          schema:
-            type: string
-          description: Nama stasiun tujuan
-        - in: query
-          name: date
-          schema:
-            type: string
-            format: date
-          description: Tanggal keberangkatan format YYYY-MM-DD
+      summary: Get all schedules
       responses:
-        200:
-          description: Jadwal berhasil diambil
+        '200':
+          description: List of schedules
           content:
             application/json:
-              example:
-                success: true
-                message: Berhasil mengambil data jadwal kereta
-                data: [...]
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+
+  /api/v1/schedule/{id}:
+    get:
+      tags:
+        - Schedule
+      summary: Get schedule by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Schedule detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - Schedule
+      summary: Update schedule
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trainId:
+                  type: string
+                  format: uuid
+                departureStationId:
+                  type: string
+                  format: uuid
+                arrivalStationId:
+                  type: string
+                  format: uuid
+                departureTime:
+                  type: string
+                  format: date-time
+                arrivalTime:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Schedule updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - Schedule
+      summary: Delete schedule
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Schedule deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+
 components:
   schemas:
-    ScheduleCreate:
+    Schedule:
       type: object
-      required:
-        - trainId
-        - departureStationId
-        - arrivalStationId
-        - departureTime
-        - arrivalTime
-        - price
       properties:
+        id:
+          type: string
+          format: uuid
         trainId:
           type: string
+          format: uuid
         departureStationId:
           type: string
+          format: uuid
         arrivalStationId:
           type: string
+          format: uuid
         departureTime:
           type: string
+          format: date-time
         arrivalTime:
           type: string
-        price:
-          type: number
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
