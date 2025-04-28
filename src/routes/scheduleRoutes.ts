@@ -3,13 +3,16 @@ import express from 'express';
 import { ROLE } from '../constants';
 import { accessRole, auth } from '../middlewares/auth';
 import { validateRequest } from '../middlewares/validateRequest';
-import { scheduleSchema } from '../validations/scheduleValidation';
+import { createScheduleSchema, updateScheduleSchema } from '../validations/scheduleValidation';
 import {
   createSchedule,
+  getScheduleDetail,
   getSchedules,
-  uploadScheduleExcel,
+  removeSchedule,
+  updateSchedule,
+  // uploadScheduleExcel,
 } from '../controllers/scheduleController';
-import { upload } from '../middlewares/upload';
+// import { upload } from '../middlewares/upload';
 
 const scheduleRoute = express.Router();
 
@@ -18,16 +21,25 @@ scheduleRoute.post(
   '/',
   auth,
   accessRole(ROLE.ADMIN),
-  validateRequest(scheduleSchema),
+  validateRequest(createScheduleSchema),
   createSchedule
 );
-
-scheduleRoute.post(
-  '/upload',
+scheduleRoute.get('/:id', auth, getScheduleDetail);
+scheduleRoute.patch(
+  '/:id',
   auth,
   accessRole(ROLE.ADMIN),
-  upload.single('file'),
-  uploadScheduleExcel
+  validateRequest(updateScheduleSchema),
+  updateSchedule
 );
+scheduleRoute.delete('/:id', auth, accessRole(ROLE.ADMIN), removeSchedule);
+
+// scheduleRoute.post(
+//   '/upload',
+//   auth,
+//   accessRole(ROLE.ADMIN),
+//   upload.single('file'),
+//   uploadScheduleExcel
+// );
 
 export default scheduleRoute;

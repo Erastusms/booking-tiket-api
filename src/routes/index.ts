@@ -13,6 +13,6 @@ router.use('/station', stationRoute);
 router.use('/train', trainRoute);
 router.use('/wagon', wagonRoute);
 router.use('/seat', seatRoute);
-// router.use('/schedule', scheduleRoute);
+router.use('/schedule', scheduleRoute);
 
 export default router;
