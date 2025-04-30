@@ -14,7 +14,7 @@ export const createSeatService = async (data: CreateSeatInput) => {
   return await prisma.seat.create({ data });
 };
 
-export const createSeatsFromExcelService = async (data: CreateSeatInput[]) => {
+export const createBatchSeatsService = async (data: CreateSeatInput[]) => {
   return await prisma.seat.createMany({ data, skipDuplicates: true });
 };
 
