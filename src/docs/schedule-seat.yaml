@@ -1,0 +1,72 @@
+paths:
+  /schedule-seat/batch:
+    post:
+      tags:
+        - ScheduleSeat
+      summary: Create ScheduleSeat secara massal dari file Excel
+      description: Endpoint ini digunakan untuk membuat banyak data ScheduleSeat dari file Excel yang di-*upload*.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: ScheduleSeat berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: ScheduleSeat berhasil dibuat
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScheduleSeat'
+        '400':
+          description: Tidak ada file terupload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tidak ada file terupload
+        '401':
+          description: Unauthorized
+        '404':
+          description: Data tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ScheduleSeat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        scheduleId:
+          type: string
+        seatId:
+          type: string
+        isBooked:
+          type: boolean
+          example: false
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
