@@ -1,18 +1,24 @@
 import xlsx from 'xlsx';
-
-interface SeatExcelData {
-  seatNumber: string;
-  seatAvailability: 'AVAILABLE' | 'RESERVED' | 'BOOKED';
-  row: number;
-  column: string;
-  wagonId: string;
+interface ExcelOptions<T> {
+  filePath: string;
+  sheetIndex?: number;
+  mapRow?: (row: any) => T;
 }
 
-export const parseExcelFile = (filePath: string): SeatExcelData[] => {
+export function parseExcelFile<T = any>({
+  filePath,
+  sheetIndex = 0,
+  mapRow,
+}: ExcelOptions<T>): T[] {
   const workbook = xlsx.readFile(filePath);
-  const sheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[sheetName];
-  const jsonData = xlsx.utils.sheet_to_json<SeatExcelData>(worksheet);
+  const sheetName = workbook.SheetNames[sheetIndex];
+  const sheet = workbook.Sheets[sheetName];
 
-  return jsonData;
-};
+  const rawData: any[] = xlsx.utils.sheet_to_json(sheet, { defval: '' });
+
+  if (mapRow) {
+    return rawData.map(mapRow);
+  }
+
+  return rawData as T[];
+}
