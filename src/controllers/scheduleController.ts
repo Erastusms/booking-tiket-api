@@ -38,7 +38,6 @@ export const getSchedules = async (req: Request, res: Response) => {
 
 export const getScheduleDetail = async (req: Request, res: Response) => {
   const scheduleDetail = await getDetailScheduleService(req.params.id);
-  console.log(scheduleDetail)
   if (!scheduleDetail) {
     return errorResponse(res, MESSAGE.DATA_NOT_FOUND, 404);
   }
