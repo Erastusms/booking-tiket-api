@@ -7,6 +7,7 @@ import wagonRoute from './wagonRoute';
 import seatRoute from './seatRoutes';
 import fareRoute from './fareRoutes';
 import scheduleSeatRouter from './scheduleSeatRoutes';
+import bookingRoute from './bookingRoutes';
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.use('/seat', seatRoute);
 router.use('/schedule', scheduleRoute);
 router.use('/schedule-seat', scheduleSeatRouter);
 router.use('/fare', fareRoute);
+router.use('/booking', bookingRoute);
 
 export default router;

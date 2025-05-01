@@ -11,3 +11,5 @@ export const ROLE = {
   ADMIN: 'admin',
   MEMBER: 'member',
 };
+
+export const LOCK_EXPIRATION = 5000; // 5 detik
