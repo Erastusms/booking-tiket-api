@@ -3,6 +3,10 @@ import { Prisma } from '@prisma/client';
 import { errorResponse } from '../utils/responseHandler';
 import { isPrismaError } from '../helpers/isPrismaError';
 
+export const isErrorResponse = (obj: any): obj is { message: string } => {
+  return typeof obj === 'object' && obj !== null && 'message' in obj;
+};
+
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   // Prisma error (any type)
   if (isPrismaError(err)) {
@@ -22,6 +26,7 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
     }
 
     if (err instanceof Prisma.PrismaClientValidationError) {
+      console.log(err.message);
       message = 'Query Prisma tidak valid';
     }
 
