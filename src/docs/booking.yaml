@@ -1,0 +1,165 @@
+paths:
+  /api/v1/booking:
+    post:
+      summary: Buat booking tiket
+      security:
+        - bearerAuth: []
+      tags:
+        - Booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      responses:
+        '201':
+          description: Booking berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Kesalahan input atau seat sedang diproses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Tidak terautentikasi
+        '403':
+          description: Tidak diizinkan
+        '500':
+          description: Kesalahan server
+
+  /api/v1/booking/me:
+    get:
+      summary: Ambil semua booking milik user
+      security:
+        - bearerAuth: []
+      tags:
+        - Booking
+      responses:
+        '200':
+          description: Berhasil mengambil daftar booking
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '401':
+          description: Tidak terautentikasi
+
+  /api/v1/booking/{id}:
+    get:
+      summary: Ambil detail booking
+      security:
+        - bearerAuth: []
+      tags:
+        - Booking
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID Booking
+      responses:
+        '200':
+          description: Berhasil mengambil detail booking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '403':
+          description: Tidak memiliki akses booking ini
+        '404':
+          description: Booking tidak ditemukan
+
+    delete:
+      summary: Hapus booking
+      security:
+        - bearerAuth: []
+      tags:
+        - Booking
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: Booking berhasil dihapus
+        '403':
+          description: Tidak memiliki akses
+        '404':
+          description: Booking tidak ditemukan
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        scheduleId:
+          type: string
+          format: uuid
+        seatId:
+          type: string
+          format: uuid
+        passengerName:
+          type: string
+        totalPassenger:
+          type: integer
+        status:
+          type: string
+          enum: [PENDING, CONFIRMED, CANCELLED]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateBookingRequest:
+      type: object
+      required:
+        - scheduleId
+        - seatId
+        - passengerName
+        - totalPassenger
+      properties:
+        scheduleId:
+          type: string
+          format: uuid
+        seatId:
+          type: string
+          format: uuid
+        passengerName:
+          type: string
+        totalPassenger:
+          type: integer
+          minimum: 1
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+security:
+  - bearerAuth: []
