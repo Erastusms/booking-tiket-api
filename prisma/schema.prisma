@@ -123,6 +123,8 @@ model ScheduleSeat {
   seat       Seat     @relation(fields: [seatId], references: [id])
   seatId     String
   isBooked   Boolean  @default(false)
+
+  @@unique([scheduleId, seatId])
 }
 
 model Fare {

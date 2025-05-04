@@ -172,6 +172,9 @@ CREATE UNIQUE INDEX "User_phoneNumber_key" ON "User"("phoneNumber");
 -- CreateIndex
 CREATE UNIQUE INDEX "Train_code_key" ON "Train"("code");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "ScheduleSeat_scheduleId_seatId_key" ON "ScheduleSeat"("scheduleId", "seatId");
+
 -- AddForeignKey
 ALTER TABLE "Wagon" ADD CONSTRAINT "Wagon_trainId_fkey" FOREIGN KEY ("trainId") REFERENCES "Train"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
